@@ -1,0 +1,7 @@
+{
+  "name": "bunkies-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
