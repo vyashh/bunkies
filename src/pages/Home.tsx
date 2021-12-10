@@ -1,18 +1,33 @@
 import { IonContent, IonPage } from "@ionic/react";
 import axios from "axios";
-import { useEffect } from "react";
+import moment from 'moment';
+import { useEffect, useState } from "react";
 import TaskCard from "../components/task-card/task-card.component";
 import "./Home.scss";
 
+// set start of week on monday
+moment.updateLocale('en', {
+  week: {
+    dow: 1,
+  },
+});
+
 const Home: React.FC = () => {
+  const [schedule, setSchedule] = useState<Array<any>>([]);
+  let currentWeek: any = moment(Date.now()).isoWeek(); // now 
+
   useEffect(() => {
     axios
       .request({
-        url: "https://us-central1-bunkies-app.cloudfunctions.net/app/house/9pqaO9JaL852lSgDLm01",
+        url: "https://us-central1-bunkies-app.cloudfunctions.net/app/house/9pqaO9JaL852lSgDLm01/schedule",
       })
       .then((res) => {
-        console.log(res.data.data);
+        setSchedule(res.data.data);
       });
+
+
+    
+
   }, []);
 
   return (
@@ -35,7 +50,17 @@ const Home: React.FC = () => {
           </header>
           <main>
             <p>This week</p>
-            <TaskCard />
+            {schedule.map((task) => {
+              { return task.week === currentWeek && 
+                <TaskCard key={task.week} week={task.week} firstName={task.name}/>
+             }
+            })}
+            <p>Upcoming</p>
+            {schedule.map((task) => {
+              { return task.week !== currentWeek && 
+                 <TaskCard key={task.week} week={task.week} firstName={task.name}/>
+              }
+            })}
           </main>
           <footer>Footer Content — Header.com 2020</footer>
         </div>

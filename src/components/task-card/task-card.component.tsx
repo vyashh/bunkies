@@ -2,7 +2,12 @@ import "./task-card.styles.scss";
 import ToiletIcon from "../../assets/icons/toilet.svg";
 import ChevronIcon from "../../assets/icons/chevron.svg";
 
-const TaskCard: React.FC = () => {
+interface Props {
+  week: string;
+  firstName: string;
+}
+
+const TaskCard: React.FC<Props> = (props) => {
   const styleOptions = {
     main: {
       backgroundColor: "rgb(4, 52, 141)",
@@ -14,14 +19,14 @@ const TaskCard: React.FC = () => {
   return (
     <div className="card" style={styleOptions.main}>
       <div className="card__week">
-        <p>Week 36</p>
+        <p>Week {props.week}</p>
       </div>
       <div className="card__task-icon">
         <img src={ToiletIcon} alt="toilet" />
       </div>
       <div className="card__header">
         <h3 className="card__header--title">Toilet boven</h3>
-        <p className="card__header--assigned-to">You</p>
+        <p className="card__header--assigned-to">{props.firstName}</p>
       </div>
       <div className="card__description">
         <div className="card__description--task">Task </div>
