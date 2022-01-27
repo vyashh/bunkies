@@ -1,12 +1,14 @@
 import { IonContent, IonPage } from "@ionic/react";
 import axios from "axios";
-import moment from 'moment';
+import moment from "moment";
 import { useEffect, useState } from "react";
-import TaskCard from "../components/task-card/task-card.component";
+import TaskCard from "../../components/task-card/task-card.component";
+import { logout } from "../../providers/AuthProvider";
+import { auth } from "../../services/firebase";
 import "./Home.scss";
 
 // set start of week on monday
-moment.updateLocale('en', {
+moment.updateLocale("en", {
   week: {
     dow: 1,
   },
@@ -14,7 +16,11 @@ moment.updateLocale('en', {
 
 const Home: React.FC = () => {
   const [schedule, setSchedule] = useState<Array<any>>([]);
-  let currentWeek: any = moment(Date.now()).isoWeek(); // now 
+  let currentWeek: any = moment(Date.now()).isoWeek(); // now
+
+  const signOut = () => {
+    logout(auth);
+  };
 
   useEffect(() => {
     axios
@@ -24,10 +30,6 @@ const Home: React.FC = () => {
       .then((res) => {
         setSchedule(res.data.data);
       });
-
-
-    
-
   }, []);
 
   return (
@@ -47,18 +49,35 @@ const Home: React.FC = () => {
           <header className="home__date">
             <h4 className="home__date--label">Today</h4>
             <p className="home__date--day">06 September 2021</p>
+            <button onClick={signOut}>Signout</button>
           </header>
           <main>
             <p>This week</p>
             {schedule.map((task) => {
-              { return task.week === currentWeek && 
-                <TaskCard key={task.week} week={task.week} firstName={task.name}/>
-             }
+              {
+                return (
+                  task.week === currentWeek && (
+                    <TaskCard
+                      key={task.week}
+                      week={task.week}
+                      firstName={task.name}
+                    />
+                  )
+                );
+              }
             })}
             <p>Upcoming</p>
             {schedule.map((task) => {
-              { return task.week !== currentWeek && 
-                 <TaskCard key={task.week} week={task.week} firstName={task.name}/>
+              {
+                return (
+                  task.week !== currentWeek && (
+                    <TaskCard
+                      key={task.week}
+                      week={task.week}
+                      firstName={task.name}
+                    />
+                  )
+                );
               }
             })}
           </main>

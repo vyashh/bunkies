@@ -1,0 +1,17 @@
+.input {
+  padding-bottom: 1em;
+  & p {
+    // margin: 0;
+  }
+
+  & input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid rgb(196, 196, 196);
+    background-color: white;
+  }
+
+  & input:focus {
+    outline: none;
+  }
+}

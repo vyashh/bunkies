@@ -12,7 +12,7 @@ import calendar from "./assets/calendar.svg";
 import avatar from "./assets/avatar.svg";
 import history from "./assets/history.svg";
 import { IonReactRouter } from "@ionic/react-router";
-import Home from "./pages/Home";
+import Home from "./pages/Home/Home";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -32,33 +32,27 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
+import { AuthProvider, useAuth } from "./providers/AuthProvider_old";
+import Login from "./pages/Login/Login";
+import PrivateRoute from "./components/private-routes/private-routes";
+import { useContext } from "react";
+import { Context } from "./services/store";
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route exact path="/calendar">
-            <Home />
+const App: React.FC = () => {
+  const { userData } = useContext(Context);
+  const [currentUser, setCurrentUser] = userData;
+  return (
+    <IonApp>
+      <AuthProvider>
+        <IonReactRouter>
+          <Route exact path="/login">
+            <Login />
           </Route>
-          <Route exact path="/">
-            <Redirect to="/calendar" />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="calendar" href="/calendar">
-            <IonIcon icon={calendar}></IonIcon>
-          </IonTabButton>
-          <IonTabButton tab="home" href="/home">
-            <IonIcon icon={history}></IonIcon>
-          </IonTabButton>
-          <IonTabButton tab="home" href="/home">
-            <IonIcon icon={avatar}></IonIcon>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
-);
+          <Route path="/" component={currentUser ? PrivateRoute : Login} />
+        </IonReactRouter>
+      </AuthProvider>
+    </IonApp>
+  );
+};
 
 export default App;
