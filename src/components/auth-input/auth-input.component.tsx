@@ -4,7 +4,7 @@ import Button from "../button/button.component";
 import Input from "../input/input.component";
 import "./auth-input.styles.scss";
 import { Context } from "../../services/store";
-import { login } from "../../providers/AuthProvider";
+import { login, register } from "../../providers/AuthProvider";
 import { auth } from "../../services/firebase";
 
 interface Props {
@@ -15,13 +15,21 @@ const AuthInput: React.FC<Props> = ({ authMethod }) => {
   const { userData } = useContext(Context);
   const [currentUser, setCurrentUser] = userData;
   const [email, setEmail] = useState<string>();
+  const [checkEmail, setCheckEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
+  const [checkPassword, setCheckPassword] = useState<string>();
 
   const logInfo = (e: any) => {
     e.preventDefault();
-    login(auth, email, password).then((currentUser: any) => {
-      setCurrentUser(currentUser);
-    });
+    {
+      authMethod === "login"
+        ? login(auth, email, password).then((currentUser: any) => {
+            setCurrentUser(currentUser);
+          })
+        : register(auth, email, password).then((currentUser: any) => {
+            setCurrentUser(currentUser);
+          });
+    }
   };
 
   return (
@@ -31,25 +39,38 @@ const AuthInput: React.FC<Props> = ({ authMethod }) => {
           Bunkies<span style={{ color: "#A066FF" }}>.</span>
         </div>
         <div className="auth-input__input">
-          {authMethod === "login" && <h2>Login</h2>}
+          <h2>{authMethod === "login" ? "Login" : "Register"}</h2>
           <br />
           <Input
             type="email"
             label="E-mail"
-            placeholder="Your e-mail"
+            placeholder="Your E-mail"
             setValue={setEmail}
           />
+
           <Input
             type="password"
             label="Password"
             placeholder="Your password"
             setValue={setPassword}
           />
-          <p className="auth-input__input--recover">Forgot password?</p>
-          <Button text="Login" submit={logInfo} />
-          <p className="auth-input__input--register">
-            Don&#8217;t have an account? <strong>Sign up</strong>
-          </p>
+
+          {authMethod === "login" && (
+            <p className="auth-input__input--recover">Forgot password?</p>
+          )}
+          <Button
+            text={authMethod === "login" ? "Login" : "Register"}
+            submit={logInfo}
+          />
+          {authMethod === "login" ? (
+            <p className="auth-input__input--register">
+              Don&#8217;t have an account? <strong>Sign up</strong>
+            </p>
+          ) : (
+            <p className="auth-input__input--register">
+              Already have an account? <strong>Login</strong>
+            </p>
+          )}
         </div>
       </div>
     </IonContent>

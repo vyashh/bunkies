@@ -37,6 +37,7 @@ import Login from "./pages/Login/Login";
 import PrivateRoute from "./components/private-routes/private-routes";
 import { useContext } from "react";
 import { Context } from "./services/store";
+import Register from "./pages/Register/Register";
 
 const App: React.FC = () => {
   const { userData } = useContext(Context);
@@ -49,6 +50,7 @@ const App: React.FC = () => {
             <Login />
           </Route>
           <Route path="/" component={currentUser ? PrivateRoute : Login} />
+          <Route path="/register" component={Register} />
         </IonReactRouter>
       </AuthProvider>
     </IonApp>
