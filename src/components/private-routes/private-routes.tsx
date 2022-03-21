@@ -11,8 +11,6 @@ import avatar from "../../assets/avatar.svg";
 import history from "../../assets/history.svg";
 import { Redirect, Route } from "react-router";
 import Home from "../../pages/Home/Home";
-import { useAuth } from "../../providers/AuthProvider_old";
-import Login from "../../pages/Login/Login";
 
 const PrivateRoute: React.FC = () => {
   // if current user is not logged in user will be redirected to /login

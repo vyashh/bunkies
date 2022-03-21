@@ -4,6 +4,10 @@
   grid-template-rows: 1fr 3fr;
   background-color: #54279f;
 
+  p {
+    color: black;
+  }
+
   &__header {
     color: white;
     font-size: 3em;
@@ -19,6 +23,7 @@
     padding: 1em;
     background-color: white;
     border-radius: 15px;
+    color: #54279f;
 
     &--recover {
       text-align: right;

@@ -1,19 +1,6 @@
 import { Redirect, Route } from "react-router-dom";
-import {
-  IonApp,
-  IonIcon,
-  IonLabel,
-  IonRouterOutlet,
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
-} from "@ionic/react";
-import calendar from "./assets/calendar.svg";
-import avatar from "./assets/avatar.svg";
-import history from "./assets/history.svg";
 import { IonReactRouter } from "@ionic/react-router";
 import Home from "./pages/Home/Home";
-
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
 
@@ -32,25 +19,29 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
-import { AuthProvider, useAuth } from "./providers/AuthProvider_old";
 import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
+import { IonApp } from "@ionic/react";
+import { useAuth } from "./services/firebase";
 import PrivateRoute from "./components/private-routes/private-routes";
-import { useContext } from "react";
-import { Context } from "./services/store";
 
 const App: React.FC = () => {
-  const { userData } = useContext(Context);
-  const [currentUser, setCurrentUser] = userData;
+  const currentUser = useAuth();
+
   return (
     <IonApp>
-      <AuthProvider>
-        <IonReactRouter>
-          <Route exact path="/login">
-            <Login />
-          </Route>
-          <Route path="/" component={currentUser ? PrivateRoute : Login} />
-        </IonReactRouter>
-      </AuthProvider>
+      <IonReactRouter>
+        <Route exact path="/auth">
+          <Login />
+        </Route>
+        <Route exact path="/register">
+          <Register />
+        </Route>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route path="/" component={currentUser ? PrivateRoute : Login} />
+      </IonReactRouter>
     </IonApp>
   );
 };

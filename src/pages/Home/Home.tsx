@@ -1,10 +1,11 @@
 import { IonContent, IonPage } from "@ionic/react";
 import axios from "axios";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { Redirect } from "react-router";
 import TaskCard from "../../components/task-card/task-card.component";
-import { logout } from "../../providers/AuthProvider";
-import { auth } from "../../services/firebase";
+import { logout, useAuth } from "../../services/firebase";
+import { Context } from "../../services/store";
 import "./Home.scss";
 
 // set start of week on monday
@@ -15,11 +16,13 @@ moment.updateLocale("en", {
 });
 
 const Home: React.FC = () => {
+  const { userData, loadingIndicator } = useContext(Context);
+  const currentUser = useAuth();
   const [schedule, setSchedule] = useState<Array<any>>([]);
   let currentWeek: any = moment(Date.now()).isoWeek(); // now
 
   const signOut = () => {
-    logout(auth);
+    logout();
   };
 
   useEffect(() => {
@@ -31,6 +34,10 @@ const Home: React.FC = () => {
         setSchedule(res.data.data);
       });
   }, []);
+
+  if (currentUser === null) {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <IonPage>
