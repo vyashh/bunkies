@@ -6,6 +6,7 @@ import "./auth-input.styles.scss";
 import { Context } from "../../services/store";
 import { login, register } from "../../providers/AuthProvider";
 import { auth } from "../../services/firebase";
+import { useHistory } from "react-router-dom";
 
 interface Props {
   authMethod?: string;
@@ -13,6 +14,8 @@ interface Props {
 
 const AuthInput: React.FC<Props> = ({ authMethod }) => {
   const { userData } = useContext(Context);
+  let history = useHistory();
+
   const [currentUser, setCurrentUser] = userData;
   const [email, setEmail] = useState<string>();
   const [checkEmail, setCheckEmail] = useState<string>();
@@ -23,12 +26,8 @@ const AuthInput: React.FC<Props> = ({ authMethod }) => {
     e.preventDefault();
     {
       authMethod === "login"
-        ? login(auth, email, password).then((currentUser: any) => {
-            setCurrentUser(currentUser);
-          })
-        : register(auth, email, password).then((currentUser: any) => {
-            setCurrentUser(currentUser);
-          });
+        ? login(auth, email, password).then(() => history.push("/"))
+        : register(auth, email, password).then(() => history.push("/"));
     }
   };
 
@@ -39,7 +38,9 @@ const AuthInput: React.FC<Props> = ({ authMethod }) => {
           Bunkies<span style={{ color: "#A066FF" }}>.</span>
         </div>
         <div className="auth-input__input">
-          <h2>{authMethod === "login" ? "Login" : "Register"}</h2>
+          <h2 style={{ color: "black" }}>
+            {authMethod === "login" ? "Login" : "Register"}
+          </h2>
           <br />
           <Input
             type="email"
@@ -64,11 +65,17 @@ const AuthInput: React.FC<Props> = ({ authMethod }) => {
           />
           {authMethod === "login" ? (
             <p className="auth-input__input--register">
-              Don&#8217;t have an account? <strong>Sign up</strong>
+              Don&#8217;t have an account?{" "}
+              <a href="/register">
+                <strong>Sign up</strong>
+              </a>
             </p>
           ) : (
             <p className="auth-input__input--register">
-              Already have an account? <strong>Login</strong>
+              Already have an account?{" "}
+              <a href="/login">
+                <strong>Login</strong>
+              </a>
             </p>
           )}
         </div>

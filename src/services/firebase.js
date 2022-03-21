@@ -4,7 +4,8 @@ import "firebase/firestore";
 import "firebase/analytics";
 import "firebase/storage";
 import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { createContext, useContext, useEffect, useState } from "react";
 
 // get config keys from .env file
 const config = {
@@ -24,5 +25,23 @@ export const auth = getAuth();
 // export const auth = app.auth(); // firebase auth instance
 // export const db = app.firestore(); // firebase firestore instance
 // export const base = app; // firebase storage instance
+
+export const AuthContext = createContext();
+
+export const AuthContextProvider = (props) => {
+  const [user, setUser] = useState();
+  const [error, setError] = useState();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(getAuth(), setUser, setError);
+    return () => unsubscribe();
+  }, []);
+  return <AuthContext.Provider value={{ user, error }} {...props} />;
+};
+
+export const useAuthState = () => {
+  const auth = useContext(AuthContext);
+  return { ...auth, isAuthenticated: auth.user != null };
+};
 
 export default app;

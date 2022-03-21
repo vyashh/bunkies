@@ -16,10 +16,6 @@ const Login: React.FC = () => {
     console.log(currentUser);
   });
 
-  if (currentUser) {
-    <Redirect to="/" />;
-  }
-
   return (
     <IonPage>
       <IonContent fullscreen>
