@@ -4,7 +4,13 @@ import "firebase/firestore";
 import "firebase/analytics";
 import "firebase/storage";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 
 // get config keys from .env file
@@ -19,29 +25,32 @@ const config = {
 };
 
 const app = initializeApp(config);
+const auth = getAuth();
 
 export const db = getFirestore(app);
-export const auth = getAuth();
-// export const auth = app.auth(); // firebase auth instance
-// export const db = app.firestore(); // firebase firestore instance
-// export const base = app; // firebase storage instance
 
-export const AuthContext = createContext();
-
-export const AuthContextProvider = (props) => {
-  const [user, setUser] = useState();
-  const [error, setError] = useState();
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(getAuth(), setUser, setError);
-    return () => unsubscribe();
-  }, []);
-  return <AuthContext.Provider value={{ user, error }} {...props} />;
+export const register = (email, password) => {
+  return createUserWithEmailAndPassword(auth, email, password);
 };
 
-export const useAuthState = () => {
-  const auth = useContext(AuthContext);
-  return { ...auth, isAuthenticated: auth.user != null };
+export const login = (email, password) => {
+  return signInWithEmailAndPassword(auth, email, password);
+};
+
+export const logout = () => {
+  return signOut(auth);
+};
+
+// Custom Hook
+export const useAuth = () => {
+  const [currentUser, setCurrentUser] = useState();
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => setCurrentUser(user));
+    return unsub;
+  }, []);
+
+  return currentUser;
 };
 
 export default app;

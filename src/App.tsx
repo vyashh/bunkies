@@ -19,65 +19,29 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
-import { AuthProvider, useAuth } from "./providers/AuthProvider_old";
 import Login from "./pages/Login/Login";
-import PrivateRoute from "./components/private-routes/private-routes";
-import { useContext } from "react";
-import { Context } from "./services/store";
 import Register from "./pages/Register/Register";
-import { useAuthState } from "./services/firebase";
 import { IonApp } from "@ionic/react";
+import { useAuth } from "./services/firebase";
+import PrivateRoute from "./components/private-routes/private-routes";
 
 const App: React.FC = () => {
-  const { userData } = useContext(Context);
-  const [currentUser, setCurrentUser] = userData;
+  const currentUser = useAuth();
 
-  // @ts-ignore: Unreachable code error
-  const AuthenticatedRoute = ({ component: C, ...props }) => {
-    const { isAuthenticated } = useAuthState();
-    return (
-      <Route
-        {...props}
-        render={(routeProps) =>
-          isAuthenticated ? <C {...routeProps} /> : <Redirect to="/login" />
-        }
-      />
-    );
-  };
-
-  // @ts-ignore: Unreachable code error
-  const UnAuthenticatedRoute = ({ component: C, ...props }) => {
-    const { isAuthenticated } = useAuthState();
-
-    return (
-      <Route
-        {...props}
-        render={(routeProps) =>
-          !isAuthenticated ? <C {...routeProps} /> : <Redirect to="/login" />
-        }
-      />
-    );
-  };
   return (
     <IonApp>
-      <AuthProvider>
-        <IonReactRouter>
-          {/* <Route exact path="/login">
-            <Login />
-          </Route>
-          <Route exact path="/signup">
-            <Register />
-          </Route>
-          <Route path="/" component={currentUser ? PrivateRoute : Login} />
-          <Route
-            path="/register"
-            component={currentUser ? PrivateRoute : Register}
-          /> */}
-          <AuthenticatedRoute exact path="/" component={Home} />
-          <UnAuthenticatedRoute exact path="/login" component={Login} />
-          <UnAuthenticatedRoute exact path="/register" component={Register} />
-        </IonReactRouter>
-      </AuthProvider>
+      <IonReactRouter>
+        <Route exact path="/auth">
+          <Login />
+        </Route>
+        <Route exact path="/register">
+          <Register />
+        </Route>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route path="/" component={currentUser ? PrivateRoute : Login} />
+      </IonReactRouter>
     </IonApp>
   );
 };

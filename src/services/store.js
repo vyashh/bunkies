@@ -5,7 +5,7 @@ export const Context = React.createContext();
 const Store = ({ children }) => {
   const [errorLogin, setErrorLogin] = useState("");
   const [userData, setUserData] = useState(null);
-  const [loadingIndicator, setLoadingIndicator] = useState(true);
+  const [loadingIndicator, setLoadingIndicator] = useState(false);
 
   useEffect(() => {}, []);
 
