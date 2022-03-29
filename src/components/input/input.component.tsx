@@ -1,9 +1,10 @@
 import "./input.styles.scss";
 
 interface Props {
-  label: string;
+  label?: string;
   type: string;
   placeholder: string;
+  center?: boolean;
   value?: string;
   setValue?: any;
 }
@@ -13,6 +14,7 @@ const Input: React.FC<Props> = ({
   type,
   placeholder,
   value,
+  center,
 }) => {
   return (
     <div className="input">
@@ -20,6 +22,7 @@ const Input: React.FC<Props> = ({
       <input
         type={type}
         placeholder={placeholder}
+        className={`${center && "center"}`}
         onChange={(e: any) => setValue(e.target.value)}
       />
     </div>

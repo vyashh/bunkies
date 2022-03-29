@@ -4,12 +4,13 @@ import Button from "../button/button.component";
 import Input from "../input/input.component";
 import "./auth-input.styles.scss";
 import { Context } from "../../services/store";
-import { login, logout, register } from "../../services/firebase";
-import { useHistory } from "react-router-dom";
+import { login, logout, register, useAuth } from "../../services/firebase";
+import { Redirect } from "react-router";
 
 const AuthInput: React.FC = () => {
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const { userData, loadingIndicator } = useContext(Context);
+  const currentUser = useAuth();
 
   const [loading, setLoading] = loadingIndicator;
   const [email, setEmail] = useState<string>("");
@@ -27,10 +28,8 @@ const AuthInput: React.FC = () => {
 
   const handleregister = async () => {
     setLoading(true);
-    setTimeout(() => {}, 1000);
     try {
-      const user = await register(email, password);
-      console.log(user);
+      await register(email, password);
     } catch (error: any) {
       alert(error.message);
     }
@@ -41,8 +40,7 @@ const AuthInput: React.FC = () => {
     setLoading(true);
 
     try {
-      const user = await login(email, password);
-      console.log(user);
+      await login(email, password);
     } catch (error: any) {
       alert(error.message);
     }
@@ -62,6 +60,12 @@ const AuthInput: React.FC = () => {
   const handleMethodChange = () => {
     setIsLogin(!isLogin);
   };
+
+  
+  if (currentUser) {
+    console.log("currentuser is detected redirecting to /");
+    return <Redirect to="/" />;
+  }
 
   return (
     <IonContent>

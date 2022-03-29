@@ -1,21 +1,19 @@
 import "./Register.scss";
-import { IonContent, IonPage } from "@ionic/react";
-import AuthInput from "../../components/auth-input/auth-input.component";
-import { Redirect } from "react-router";
+import { IonContent, IonPage, IonSlide, IonSlides } from "@ionic/react";
 import { useAuth } from "../../services/firebase";
 
-const Register: React.FC = () => {
+const Welcome: React.FC = () => {
   const currentUser = useAuth();
 
-  if (currentUser) {
-    return <Redirect to="/" />;
-  }
+
 
   return (
     <IonPage>
-      <IonContent fullscreen></IonContent>
+      <IonContent fullscreen>
+        
+      </IonContent>
     </IonPage>
   );
 };
 
-export default Register;
+export default Welcome;

@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Sen:wght@400;700;800&display=swap");
+
+.welcome {
+  font-family: "Sen";
+  height: 100%;
+  width: 100%;
+  background-image: url("../../assets/bg-welcome.svg");
+  color: black;
+
+  &__slides {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+
+    &__comments {
+      font-size: 0.8em;
+      opacity: 0.6;
+    }
+  }
+
+  & input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid black;
+    color: #54279f;
+  }
+
+  & input:focus {
+    outline: none;
+  }
+}
+
+.thick-line {
+  width: 2em;
+  border-bottom: 2px solid rgb(0, 0, 0);
+  border-radius: 5px;
+}
+
+.disable-slide {
+  opacity: 0;
+}

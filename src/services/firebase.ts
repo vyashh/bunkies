@@ -11,7 +11,9 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { createContext, useContext, useEffect, useState } from "react";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+
+import { useEffect, useState } from "react";
 
 // get config keys from .env file
 const config = {
@@ -29,11 +31,32 @@ const auth = getAuth();
 
 export const db = getFirestore(app);
 
-export const register = (email, password) => {
-  return createUserWithEmailAndPassword(auth, email, password);
+export const register = async (email: string, password: string) => {
+  // return createUserWithEmailAndPassword(auth, email, password);
+  try {
+    const { user } = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    const docRef = doc(db, "users", user!.uid);
+    const docData = {
+      displayName: null,
+      uid: user.uid,
+      houseId: null,
+      isAdmin: null,
+      email: user.email,
+    };
+
+    const userProfile = await setDoc(docRef, docData);
+    return userProfile;
+  } catch (e) {
+    console.log(e);
+  }
 };
 
-export const login = (email, password) => {
+export const login = (email: string, password: string) => {
   return signInWithEmailAndPassword(auth, email, password);
 };
 
@@ -41,12 +64,14 @@ export const logout = () => {
   return signOut(auth);
 };
 
-// Custom Hook
+// Custom Hook for user
 export const useAuth = () => {
-  const [currentUser, setCurrentUser] = useState();
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => setCurrentUser(user));
+    const unsub = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+    });
     return unsub;
   }, []);
 

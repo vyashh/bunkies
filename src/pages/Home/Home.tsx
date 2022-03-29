@@ -1,10 +1,12 @@
-import { IonContent, IonPage } from "@ionic/react";
+import { IonContent, IonPage, IonModal } from "@ionic/react";
 import axios from "axios";
 import moment from "moment";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Redirect } from "react-router";
 import TaskCard from "../../components/task-card/task-card.component";
+import Welcome from "../../components/welcome/welcome.component";
 import { logout, useAuth } from "../../services/firebase";
+import { createHouse } from "../../services/house";
 import { Context } from "../../services/store";
 import "./Home.scss";
 
@@ -16,7 +18,10 @@ moment.updateLocale("en", {
 });
 
 const Home: React.FC = () => {
-  const { userData, loadingIndicator } = useContext(Context);
+  const { userData, loadingIndicator, showIntroduction } = useContext(Context);
+  const [loading, setLoading] = loadingIndicator;
+  const [userHasNoHouse, setUserHasNoHouse] = showIntroduction;
+  const [currentUserData, setCurrentUserData] = userData;
   const currentUser = useAuth();
   const [schedule, setSchedule] = useState<Array<any>>([]);
   let currentWeek: any = moment(Date.now()).isoWeek(); // now
@@ -35,9 +40,15 @@ const Home: React.FC = () => {
       });
   }, []);
 
-  if (currentUser === null) {
-    return <Redirect to="/login" />;
-  }
+  // if (currentUser === null) {
+  //   console.log("currentuser is null redirecting to /login");
+  //   return <Redirect to="/login" />;
+  // }
+
+  // if (currentUserData.houseId === null) {
+  //   console.log("currentuser has no houseId redirecting to /welcome");
+  //   return <Redirect to="/welcome" />;
+  // }
 
   return (
     <IonPage>
@@ -60,7 +71,11 @@ const Home: React.FC = () => {
           </header>
           <main>
             <p>This week</p>
-            {schedule.map((task) => {
+
+            <IonModal isOpen={userHasNoHouse}>
+              <Welcome />
+            </IonModal>
+            {/* {schedule.map((task) => {
               {
                 return (
                   task.week === currentWeek && (
@@ -86,7 +101,7 @@ const Home: React.FC = () => {
                   )
                 );
               }
-            })}
+            })} */}
           </main>
           <footer>Footer Content — Header.com 2020</footer>
         </div>

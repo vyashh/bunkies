@@ -20,7 +20,6 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 import Login from "./pages/Login/Login";
-import Register from "./pages/Register/Register";
 import { IonApp } from "@ionic/react";
 import { useAuth } from "./services/firebase";
 import PrivateRoute from "./components/private-routes/private-routes";
@@ -34,12 +33,7 @@ const App: React.FC = () => {
         <Route exact path="/auth">
           <Login />
         </Route>
-        <Route exact path="/register">
-          <Register />
-        </Route>
-        <Route exact path="/">
-          <Home />
-        </Route>
+
         <Route path="/" component={currentUser ? PrivateRoute : Login} />
       </IonReactRouter>
     </IonApp>
