@@ -83,6 +83,10 @@ body {
   --ion-color-light-tint: #f5f6f9;
 }
 
+:host {
+  --color-checked: #54279f;
+}
+
 @media (prefers-color-scheme: light) {
   /*
    * Dark Colors

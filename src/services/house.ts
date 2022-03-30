@@ -43,12 +43,11 @@ export const addTask = async (
   todoList: Array<string>,
   members: Array<any>
 ) => {
-  const taskDocRef = doc(db, "houses", houseId);
-  const taskColRef = collection(taskDocRef, "tasks");
+  const docRef = doc(collection(db, "houses", houseId, "tasks"));
 
-  await addDoc(taskColRef, {
+  await setDoc(docRef, {
     title: taskTitle,
-    id: taskColRef.id,
+    id: docRef.id,
     todo: todoList,
     assignedTo: members,
   });

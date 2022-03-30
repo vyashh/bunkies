@@ -21,7 +21,9 @@ const AdminPage: React.FC = () => {
         <IonHeader translucent>
           <IonToolbar>
             <IonButtons slot="end">
-              <IonButton style={{ backgroundColor: "transparent" }}>
+              <IonButton
+                style={{ backgroundColor: "transparent", color: "#54279f" }}
+              >
                 Done
               </IonButton>
             </IonButtons>
