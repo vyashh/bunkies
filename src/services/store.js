@@ -8,27 +8,40 @@ const Store = ({ children }) => {
   const currentUser = useAuth();
   const [errorLogin, setErrorLogin] = useState("");
   const [userData, setUserData] = useState(null);
+  const [houseData, setHouseData] = useState(null);
   const [loadingIndicator, setLoadingIndicator] = useState(false);
   const [showIntroduction, setShowIntroduction] = useState(false);
 
-  const getUserData = async () => {
-    if (currentUser && !userData) {
-      setLoadingIndicator(true);
-      const docRef = doc(db, "users", currentUser.uid);
-      const docSnap = await getDoc(docRef);
+  const getHouseData = async (houseId) => {
+    const docRef = doc(db, "houses", houseId);
+    const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setUserData(data);
-        !data.houseId && setShowIntroduction(true);
-      }
-      setLoadingIndicator(false);
+    if (docSnap.exists()) {
+      setHouseData(docSnap.data());
     }
   };
 
   useEffect(() => {
+    const getUserData = async () => {
+      if (currentUser && !userData) {
+        setLoadingIndicator(true);
+        const docRef = doc(db, "users", currentUser.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setUserData(data);
+
+          getHouseData(data.houseId);
+
+          !data.houseId && setShowIntroduction(true);
+        }
+        setLoadingIndicator(false);
+      }
+    };
     getUserData();
-  });
+    console.log("useEffect();");
+  }, [currentUser, setUserData, userData]);
 
   return (
     <Context.Provider
@@ -36,6 +49,7 @@ const Store = ({ children }) => {
         errorState: [errorLogin, setErrorLogin],
         loadingIndicator: [loadingIndicator, setLoadingIndicator],
         userData: [userData, setUserData],
+        houseData: [houseData, setHouseData],
         showIntroduction: [showIntroduction, setShowIntroduction],
       }}
     >

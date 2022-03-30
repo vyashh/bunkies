@@ -1,9 +1,16 @@
-import { collection, doc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "./firebase";
 
 interface User {
   displayName: string;
-  id: string;
+  uid: string;
 }
 
 const houseRef = doc(collection(db, "houses"));
@@ -18,13 +25,31 @@ export const createHouse = async (houseName: string, user?: User) => {
     id: houseRef.id,
     name: houseName,
     code: generateCode(),
+    members: arrayUnion({ displayName: user?.displayName, uid: user?.uid }),
   });
 
   // update houseId field
-  const userRef = doc(db, "users", user!.id);
+  const userRef = doc(db, "users", user!.uid);
   await updateDoc(userRef, {
     displayName: user?.displayName,
     houseId: houseRef.id,
     isAdmin: true,
+  });
+};
+
+export const addTask = async (
+  houseId: string,
+  taskTitle: string,
+  todoList: Array<string>,
+  members: Array<any>
+) => {
+  const taskDocRef = doc(db, "houses", houseId);
+  const taskColRef = collection(taskDocRef, "tasks");
+
+  await addDoc(taskColRef, {
+    title: taskTitle,
+    id: taskColRef.id,
+    todo: todoList,
+    assignedTo: members,
   });
 };

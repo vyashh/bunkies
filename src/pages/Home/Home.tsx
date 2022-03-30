@@ -3,6 +3,7 @@ import axios from "axios";
 import moment from "moment";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Redirect } from "react-router";
+import AdminPage from "../../components/admin-page/admin-page.component";
 import TaskCard from "../../components/task-card/task-card.component";
 import Welcome from "../../components/welcome/welcome.component";
 import { logout, useAuth } from "../../services/firebase";
@@ -20,9 +21,8 @@ moment.updateLocale("en", {
 const Home: React.FC = () => {
   const { userData, loadingIndicator, showIntroduction } = useContext(Context);
   const [loading, setLoading] = loadingIndicator;
+  const [openAdminSettings, setOpenAdminSettings] = useState(false);
   const [userHasNoHouse, setUserHasNoHouse] = showIntroduction;
-  const [currentUserData, setCurrentUserData] = userData;
-  const currentUser = useAuth();
   const [schedule, setSchedule] = useState<Array<any>>([]);
   let currentWeek: any = moment(Date.now()).isoWeek(); // now
 
@@ -75,6 +75,10 @@ const Home: React.FC = () => {
             <IonModal isOpen={userHasNoHouse}>
               <Welcome />
             </IonModal>
+
+            <IonModal isOpen={true}>
+              <AdminPage />
+            </IonModal>
             {/* {schedule.map((task) => {
               {
                 return (
@@ -103,7 +107,7 @@ const Home: React.FC = () => {
               }
             })} */}
           </main>
-          <footer>Footer Content — Header.com 2020</footer>
+          <footer></footer>
         </div>
       </IonContent>
     </IonPage>

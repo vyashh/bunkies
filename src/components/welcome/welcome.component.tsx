@@ -34,7 +34,7 @@ const Welcome: React.FC = () => {
     if (action === "create") {
       createHouse(houseName, {
         displayName: userName,
-        id: currentUser?.uid,
+        uid: currentUser?.uid,
       }).then(setUserHasNoHouse(false));
 
       setLoading(false);
