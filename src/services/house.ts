@@ -40,6 +40,7 @@ export const createHouse = async (houseName: string, user?: User) => {
 export const addTask = async (
   houseId: string,
   taskTitle: string,
+  color: string,
   todoList: Array<string>,
   members: Array<any>
 ) => {
@@ -47,6 +48,7 @@ export const addTask = async (
 
   await setDoc(docRef, {
     title: taskTitle,
+    color: color,
     id: docRef.id,
     todo: todoList,
     assignedTo: members,

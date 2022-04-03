@@ -22,6 +22,7 @@ import {
 import { useContext, useState } from "react";
 import { Context } from "../../services/store";
 import { addTask as addTaskToDB } from "../../services/house";
+import { CirclePicker } from "react-color";
 
 interface Props {
   create?: boolean;
@@ -35,6 +36,7 @@ const AdminTask: React.FC<Props> = ({ create }) => {
   const [title, setTitle] = useState<string>("");
   const [members, setMembers] = useState<any[]>([]);
   const [penalty, setPenalty] = useState<any[]>([]);
+  const [color, setColor] = useState<string>("");
 
   const addTask = (e: any) => {
     if (e.key === "Enter") {
@@ -51,12 +53,14 @@ const AdminTask: React.FC<Props> = ({ create }) => {
   };
 
   const addTaskToHouse = () => {
-    addTaskToDB(house.id, title, tasks, members).then(() =>
+    addTaskToDB(house.id, title, color, tasks, members).then(() =>
       setCreateTask(false)
     );
   };
 
-  console.log(house);
+  const handleColorChange = (color: any) => {
+    setColor(color.hex);
+  };
 
   return (
     <div>
@@ -99,6 +103,26 @@ const AdminTask: React.FC<Props> = ({ create }) => {
                   <IonInput
                     placeholder="Clean Bathroom"
                     onKeyUp={(e: any) => setTitle(e.target.value)}
+                  />
+                </IonItem>
+
+                <IonItem>
+                  <IonLabel>Color</IonLabel>
+                  <br />
+                  <CirclePicker
+                    color={color}
+                    onChangeComplete={handleColorChange}
+                    colors={[
+                      "#54279F",
+                      "#B8178D",
+                      "#AF133E",
+                      "#00266F",
+                      "#AC42FF",
+                      "#FE29C5",
+                      "#F13F70",
+                      "#3062C2",
+                      "#2E2E2E",
+                    ]}
                   />
                 </IonItem>
 
