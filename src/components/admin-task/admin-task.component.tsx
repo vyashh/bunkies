@@ -23,16 +23,18 @@ import { useContext, useState } from "react";
 import { Context } from "../../services/store";
 import { addTask as addTaskToDB } from "../../services/house";
 import { CirclePicker } from "react-color";
+import NoData from "../../assets/empty.svg";
 
 interface Props {
   create?: boolean;
 }
 
 const AdminTask: React.FC<Props> = ({ create }) => {
-  const { houseData } = useContext(Context);
+  const { houseData, tasksData } = useContext(Context);
+  const [tasks, setTasks] = tasksData;
   const [house, setHouse] = houseData;
   const [createTask, setCreateTask] = useState(false);
-  const [tasks, setTasks] = useState<Array<any>>([]);
+  const [todoList, setTodoList] = useState<Array<any>>([]);
   const [title, setTitle] = useState<string>("");
   const [members, setMembers] = useState<any[]>([]);
   const [penalty, setPenalty] = useState<any[]>([]);
@@ -40,16 +42,18 @@ const AdminTask: React.FC<Props> = ({ create }) => {
 
   const addTask = (e: any) => {
     if (e.key === "Enter") {
-      const newTask = e.target.value;
-      setTasks((tasks) => [...tasks, { title: newTask }]);
+      const newTodoItem = e.target.value;
+      setTodoList((todo) => [...todoList, { title: newTodoItem }]);
       e.target.value = "";
     }
   };
 
   const deleteTask = (item: number) => {
-    const newTasks = tasks.filter((task, index) => index !== item);
-    console.log(newTasks);
-    setTasks(newTasks);
+    const newTodoList = todoList.filter(
+      (todoItem, index) => index !== todoItem
+    );
+    console.log(newTodoList);
+    setTodoList(newTodoList);
   };
 
   const addTaskToHouse = () => {
@@ -64,10 +68,25 @@ const AdminTask: React.FC<Props> = ({ create }) => {
 
   return (
     <div>
-      {/* <div className="admin-task--task" style={{ backgroundColor: "#1a30ff" }}>
-        <div className="admin-task--task__title">Toilet Boven</div>
-        <div className="admin-task--task__assigned">User</div>
-      </div> */}
+      {tasks ? (
+        tasks.map((task: any) => {
+          return (
+            <div
+              className="admin-task--task"
+              style={{ backgroundColor: task.color }}
+            >
+              <div className="admin-task--task__title">{task.title}</div>
+              <div className="admin-task--task__assigned">User</div>
+            </div>
+          );
+        })
+      ) : (
+        <div className="no-data">
+          <div>
+            <p>No Tasks. Create new task!</p>
+          </div>
+        </div>
+      )}
       <IonFab horizontal="end" vertical="bottom" slot="fixed">
         <IonFabButton onClick={() => setCreateTask(true)}>
           <IonIcon icon={Add} />
@@ -168,8 +187,8 @@ const AdminTask: React.FC<Props> = ({ create }) => {
                   />
                 </IonItem>
 
-                {tasks &&
-                  tasks.map((task, index) => {
+                {todoList &&
+                  todoList.map((task, index) => {
                     console.log(task);
                     return (
                       <IonItem key={index}>

@@ -76,8 +76,8 @@ const Home: React.FC = () => {
               <Welcome />
             </IonModal>
 
-            <IonModal isOpen={true}>
-              <AdminPage />
+            <IonModal isOpen={false}>
+              {/* <AdminPage setOpenAdminSettings={setOpenAdminSettings} /> */}
             </IonModal>
             {/* {schedule.map((task) => {
               {

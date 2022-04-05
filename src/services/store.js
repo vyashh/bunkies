@@ -1,4 +1,4 @@
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import React, { useState, useEffect } from "react";
 import { db, useAuth } from "./firebase";
 
@@ -9,6 +9,7 @@ const Store = ({ children }) => {
   const [errorLogin, setErrorLogin] = useState("");
   const [userData, setUserData] = useState(null);
   const [houseData, setHouseData] = useState(null);
+  const [tasksData, setTasksData] = useState(null);
   const [loadingIndicator, setLoadingIndicator] = useState(false);
   const [showIntroduction, setShowIntroduction] = useState(false);
 
@@ -18,6 +19,20 @@ const Store = ({ children }) => {
 
     if (docSnap.exists()) {
       setHouseData(docSnap.data());
+    }
+
+    getHouseTasks(houseId);
+  };
+
+  const getHouseTasks = async (houseId) => {
+    const tasksRef = await getDocs(collection(db, "houses", houseId, "tasks"));
+    const tasks = [];
+
+    if (!tasksRef.empty) {
+      tasksRef.forEach((doc) => {
+        tasks.push(doc.data());
+      });
+      setTasksData(tasks);
     }
   };
 
@@ -50,6 +65,7 @@ const Store = ({ children }) => {
         loadingIndicator: [loadingIndicator, setLoadingIndicator],
         userData: [userData, setUserData],
         houseData: [houseData, setHouseData],
+        tasksData: [tasksData, setTasksData],
         showIntroduction: [showIntroduction, setShowIntroduction],
       }}
     >

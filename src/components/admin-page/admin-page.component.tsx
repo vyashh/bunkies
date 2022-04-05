@@ -9,12 +9,14 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useContext } from "react";
-import { Context } from "../../services/store";
 import AdminTask from "../admin-task/admin-task.component";
 import "./admin-page.styles.scss";
 
-const AdminPage: React.FC = () => {
+interface Props {
+  setOpenAdminSettings: () => boolean;
+}
+
+const AdminPage: React.FC<Props> = ({ setOpenAdminSettings }) => {
   return (
     <div>
       <IonContent fullscreen>
@@ -23,6 +25,7 @@ const AdminPage: React.FC = () => {
             <IonButtons slot="end">
               <IonButton
                 style={{ backgroundColor: "transparent", color: "#54279f" }}
+                // onClick={() => setOpenAdminSettings(false)}
               >
                 Done
               </IonButton>
