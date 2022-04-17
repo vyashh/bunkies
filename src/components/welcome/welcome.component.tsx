@@ -1,7 +1,7 @@
 import { IonSlide, IonSlides } from "@ionic/react";
 import { useContext, useRef, useState } from "react";
 import { useAuth } from "../../services/firebase";
-import { createHouse } from "../../services/house";
+import { createHouse, joinHouse } from "../../services/house";
 import { Context } from "../../services/store";
 import Button from "../button/button.component";
 import Input from "../input/input.component";
@@ -16,7 +16,7 @@ const Welcome: React.FC = () => {
   const currentUser = useAuth();
   const sliderRef = useRef<any>(null);
   const [userName, setUserName] = useState<string>("");
-  const [houseCode, setHouseCode] = useState<string>("");
+  const [houseCode, setHouseCode] = useState<number>();
   const [houseName, setHouseName] = useState<string>("");
   const [isCreate, setIsCreate] = useState<boolean>(false);
 
@@ -29,15 +29,26 @@ const Welcome: React.FC = () => {
   };
 
   // create user profile and house profile.
-  const handleSubmit = (action: string) => {
+  const handleSubmit = (action?: string) => {
     setLoading(true);
-    if (action === "create") {
-      createHouse(houseName, {
-        displayName: userName,
-        uid: currentUser?.uid,
-      }).then(setUserHasNoHouse(false));
 
-      setLoading(false);
+    switch (action) {
+      case "create":
+        createHouse(houseName, {
+          displayName: userName,
+          uid: currentUser?.uid,
+        }).then(setUserHasNoHouse(false));
+
+        setLoading(false);
+        break;
+
+      default:
+        joinHouse(houseCode!, {
+          displayName: userName,
+          uid: currentUser?.uid,
+        }).then(setUserHasNoHouse(false));
+        setLoading(false);
+        break;
     }
   };
 
@@ -98,10 +109,14 @@ const Welcome: React.FC = () => {
               className={`welcome__slides--name ${isCreate && "disable-slide"}`}
             >
               <h1>Enter Code: </h1>
-              <Input type="text" placeholder="483273" />
+              <Input type="text" placeholder="483273" setValue={setHouseCode} />
               <p className="welcome__slides__comments">
                 You can retrieve the code from the house owner.
               </p>
+
+              {houseCode && (
+                <Button text="Join House" submit={() => handleSubmit()} />
+              )}
             </div>
           </IonSlide>
           <IonSlide>

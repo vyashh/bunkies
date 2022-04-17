@@ -30,7 +30,8 @@ interface Props {
 }
 
 const AdminTask: React.FC<Props> = ({ create }) => {
-  const { houseData, tasksData } = useContext(Context);
+  const { houseData, tasksData, loadingIndicator } = useContext(Context);
+  const [loading, setLoading] = loadingIndicator;
   const [tasks, setTasks] = tasksData;
   const [house, setHouse] = houseData;
   const [createTask, setCreateTask] = useState(false);
@@ -57,9 +58,11 @@ const AdminTask: React.FC<Props> = ({ create }) => {
   };
 
   const addTaskToHouse = () => {
-    addTaskToDB(house.id, title, color, tasks, members).then(() =>
-      setCreateTask(false)
-    );
+    setLoading(true);
+    addTaskToDB(house.id, title, color, todoList, members).then(() => {
+      setCreateTask(false);
+      setLoading(false);
+    });
   };
 
   const handleColorChange = (color: any) => {

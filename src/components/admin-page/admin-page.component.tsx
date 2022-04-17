@@ -9,14 +9,17 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { useState } from "react";
+import AdminHouse from "../admin-house/admin-house.component";
 import AdminTask from "../admin-task/admin-task.component";
 import "./admin-page.styles.scss";
 
 interface Props {
-  setOpenAdminSettings: () => boolean;
+  setOpenAdminSettings: (active: boolean) => void;
 }
 
 const AdminPage: React.FC<Props> = ({ setOpenAdminSettings }) => {
+  const [currentTab, setCurrentTab] = useState<string>("tasks");
   return (
     <div>
       <IonContent fullscreen>
@@ -25,7 +28,7 @@ const AdminPage: React.FC<Props> = ({ setOpenAdminSettings }) => {
             <IonButtons slot="end">
               <IonButton
                 style={{ backgroundColor: "transparent", color: "#54279f" }}
-                // onClick={() => setOpenAdminSettings(false)}
+                onClick={() => setOpenAdminSettings(false)}
               >
                 Done
               </IonButton>
@@ -33,21 +36,31 @@ const AdminPage: React.FC<Props> = ({ setOpenAdminSettings }) => {
             <IonTitle>House Settings</IonTitle>
           </IonToolbar>
           <IonToolbar>
-            <IonSegment value="tasks">
-              <IonSegmentButton value="tasks">
+            <IonSegment value={currentTab}>
+              <IonSegmentButton
+                value="tasks"
+                onClick={() => setCurrentTab("tasks")}
+              >
                 <IonLabel>Tasks</IonLabel>
               </IonSegmentButton>
-              <IonSegmentButton value="penalties">
+              <IonSegmentButton
+                value="penalties"
+                onClick={() => setCurrentTab("penalties")}
+              >
                 <IonLabel>Penalties</IonLabel>
               </IonSegmentButton>
-              <IonSegmentButton value="house">
+              <IonSegmentButton
+                value="house"
+                onClick={() => setCurrentTab("house")}
+              >
                 <IonLabel>House</IonLabel>
               </IonSegmentButton>
             </IonSegment>
           </IonToolbar>
         </IonHeader>
         <div className="admin">
-          <AdminTask />
+          {currentTab === "tasks" && <AdminTask />}
+          {currentTab === "house" && <AdminHouse />}
         </div>
       </IonContent>
     </div>

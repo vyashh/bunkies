@@ -1,41 +1,33 @@
 import "./task-card.styles.scss";
-import ToiletIcon from "../../assets/icons/toilet.svg";
 import ChevronIcon from "../../assets/icons/chevron.svg";
+import hexToRgba from "hex-to-rgba";
 
 interface Props {
-  week: string;
-  firstName: string;
+  week: number;
+  member: string;
+  title: string;
+  color: string;
 }
 
 const TaskCard: React.FC<Props> = (props) => {
-  const styleOptions = {
-    main: {
-      backgroundColor: "rgb(4, 52, 141)",
-    },
-    sides: {
-      backgroundColor: "rgb(104, 152, 141)",
-    },
-  };
+  const color = hexToRgba("#0000", 0.6);
+
   return (
-    <div className="card" style={styleOptions.main}>
-      <div className="card__week">
-        <p>Week {props.week}</p>
+    <div className="card" style={{ backgroundColor: props.color }}>
+      <div className="card__week" style={{ backgroundColor: color }}>
+        <p>
+          Week <br />
+          <span style={{ fontSize: "2em" }}> {props.week}</span>
+        </p>
       </div>
-      <div className="card__task-icon">
-        <img src={ToiletIcon} alt="toilet" />
-      </div>
+
       <div className="card__header">
-        <h3 className="card__header--title">Toilet boven</h3>
-        <p className="card__header--assigned-to">{props.firstName}</p>
+        <h3 className="card__header--title">{props.title}</h3>
+        <p className="card__header--assigned-to">{props.member}</p>
       </div>
       <div className="card__description">
-        <div className="card__description--task">Task </div>
-        <div className="card__description--task-info">0/6</div>
         <div className="card__description--deadline">Deadline</div>
         <div className="card__description--deadline-info">7 days</div>
-      </div>
-      <div className="card__show">
-        <img src={ChevronIcon} alt="go to task" />
       </div>
     </div>
   );

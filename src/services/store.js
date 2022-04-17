@@ -10,6 +10,7 @@ const Store = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const [houseData, setHouseData] = useState(null);
   const [tasksData, setTasksData] = useState(null);
+  const [scheduleData, setScheduleData] = useState(null);
   const [loadingIndicator, setLoadingIndicator] = useState(false);
   const [showIntroduction, setShowIntroduction] = useState(false);
 
@@ -22,6 +23,7 @@ const Store = ({ children }) => {
     }
 
     getHouseTasks(houseId);
+    getHouseSchedule(houseId);
   };
 
   const getHouseTasks = async (houseId) => {
@@ -36,6 +38,16 @@ const Store = ({ children }) => {
     }
   };
 
+  const getHouseSchedule = async (houseId) => {
+    const docRef = doc(db, "houses", houseId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      setScheduleData(data.schedule);
+    }
+  };
+
   useEffect(() => {
     const getUserData = async () => {
       if (currentUser && !userData) {
@@ -46,10 +58,9 @@ const Store = ({ children }) => {
         if (docSnap.exists()) {
           const data = docSnap.data();
           setUserData(data);
-
-          getHouseData(data.houseId);
-
-          !data.houseId && setShowIntroduction(true);
+          !data.houseId
+            ? setShowIntroduction(true)
+            : getHouseData(data.houseId);
         }
         setLoadingIndicator(false);
       }
@@ -66,6 +77,7 @@ const Store = ({ children }) => {
         userData: [userData, setUserData],
         houseData: [houseData, setHouseData],
         tasksData: [tasksData, setTasksData],
+        scheduleData: [scheduleData, setScheduleData],
         showIntroduction: [showIntroduction, setShowIntroduction],
       }}
     >

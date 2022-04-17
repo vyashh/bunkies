@@ -5,11 +5,14 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Redirect } from "react-router";
 import AdminPage from "../../components/admin-page/admin-page.component";
 import TaskCard from "../../components/task-card/task-card.component";
+import HouseSettingsImage from "../../assets/house-settings.svg";
 import Welcome from "../../components/welcome/welcome.component";
 import { logout, useAuth } from "../../services/firebase";
-import { createHouse } from "../../services/house";
+import { createHouse, joinHouse } from "../../services/house";
 import { Context } from "../../services/store";
 import "./Home.scss";
+import { createSchedule } from "../../services/schedule";
+import TaskCardSmall from "../../components/task-card-small/task-card-small.component";
 
 // set start of week on monday
 moment.updateLocale("en", {
@@ -19,26 +22,30 @@ moment.updateLocale("en", {
 });
 
 const Home: React.FC = () => {
-  const { userData, loadingIndicator, showIntroduction } = useContext(Context);
+  const {
+    userData,
+    loadingIndicator,
+    showIntroduction,
+    scheduleData,
+    tasksData,
+  } = useContext(Context);
+  const [schedule, setSchedule] = scheduleData;
+  const [tasks, setTasks] = tasksData;
+  const [currentUserData, setCurrentUserData] = userData;
   const [loading, setLoading] = loadingIndicator;
   const [openAdminSettings, setOpenAdminSettings] = useState(false);
   const [userHasNoHouse, setUserHasNoHouse] = showIntroduction;
-  const [schedule, setSchedule] = useState<Array<any>>([]);
   let currentWeek: any = moment(Date.now()).isoWeek(); // now
 
   const signOut = () => {
     logout();
   };
 
-  useEffect(() => {
-    axios
-      .request({
-        url: "https://us-central1-bunkies-app.cloudfunctions.net/app/house/9pqaO9JaL852lSgDLm01/schedule",
-      })
-      .then((res) => {
-        setSchedule(res.data.data);
-      });
-  }, []);
+  useEffect(() => {}, [schedule]);
+
+  // voor elke maandag moet een taak gedaan worden
+  // taak moet automatisch genereren wanneer je op meer klikt of naar beneden scrollt.
+  // taak wordt toegevoegd aan een array [{dateTime: date, task:{id: , uid:}}]
 
   // if (currentUser === null) {
   //   console.log("currentuser is null redirecting to /login");
@@ -52,60 +59,63 @@ const Home: React.FC = () => {
 
   return (
     <IonPage>
-      {/* <IonHeader>
-        <IonToolbar>
-          <IonTitle>Calendar</IonTitle>
-        </IonToolbar>
-      </IonHeader> */}
       <IonContent fullscreen>
-        {/* <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Calendar</IonTitle>
-          </IonToolbar>
-        </IonHeader> */}
         <div className="home">
           <header className="home__date">
             <h4 className="home__date--label">Today</h4>
-            <p className="home__date--day">06 September 2021</p>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <p className="home__date--day">
+                {moment().format("D MMMM YYYY")}
+              </p>
+              <img
+                src={HouseSettingsImage}
+                alt="house settings"
+                onClick={() => setOpenAdminSettings(true)}
+              />
+            </div>
             <button onClick={signOut}>Signout</button>
           </header>
           <main>
-            <p>This week</p>
-
             <IonModal isOpen={userHasNoHouse}>
               <Welcome />
             </IonModal>
 
-            <IonModal isOpen={false}>
-              {/* <AdminPage setOpenAdminSettings={setOpenAdminSettings} /> */}
+            <IonModal isOpen={openAdminSettings}>
+              <AdminPage setOpenAdminSettings={setOpenAdminSettings} />
             </IonModal>
-            {/* {schedule.map((task) => {
-              {
-                return (
-                  task.week === currentWeek && (
-                    <TaskCard
-                      key={task.week}
-                      week={task.week}
-                      firstName={task.name}
-                    />
-                  )
-                );
-              }
-            })}
-            <p>Upcoming</p>
-            {schedule.map((task) => {
-              {
-                return (
-                  task.week !== currentWeek && (
-                    <TaskCard
-                      key={task.week}
-                      week={task.week}
-                      firstName={task.name}
-                    />
-                  )
-                );
-              }
-            })} */}
+
+            {schedule &&
+              schedule.map((scheduledTask: any) => {
+                const week = moment(scheduledTask.date, "DDMMYYYY").isoWeek();
+
+                return scheduledTask.tasks.map((item: any) => {
+                  const task = tasks.find(
+                    (task: any) => task.id === item.taskId
+                  );
+                  return (
+                    <div>
+                      {currentWeek === week ? (
+                        <TaskCard
+                          member={
+                            currentUserData.uid === item.member.uid
+                              ? "You"
+                              : item.member.displayName
+                          }
+                          color={task.color}
+                          title={task.title}
+                          week={week}
+                        />
+                      ) : (
+                        <TaskCardSmall
+                          color={task.color}
+                          member={item.member.displayName}
+                          week={week}
+                        />
+                      )}
+                    </div>
+                  );
+                });
+              })}
           </main>
           <footer></footer>
         </div>

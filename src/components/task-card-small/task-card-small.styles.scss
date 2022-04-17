@@ -1,0 +1,33 @@
+.card-sm {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+
+    height: 4em;
+    color: white;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: .5em;
+
+
+    &__week {
+        grid-area: 1 / 1 / 2 / 2;
+        border-right: 1px solid white;
+        text-align: center;
+        border-bottom-left-radius: 20px;
+        border-top-left-radius: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__member {
+        grid-area: 1 / 2 / 2 / 4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+}
