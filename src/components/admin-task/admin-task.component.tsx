@@ -35,11 +35,13 @@ const AdminTask: React.FC<Props> = ({ create }) => {
   const [tasks, setTasks] = tasksData;
   const [house, setHouse] = houseData;
   const [createTask, setCreateTask] = useState(false);
+  const [editTask, setEditTask] = useState(false);
   const [todoList, setTodoList] = useState<Array<any>>([]);
   const [title, setTitle] = useState<string>("");
   const [members, setMembers] = useState<any[]>([]);
   const [penalty, setPenalty] = useState<any[]>([]);
   const [color, setColor] = useState<string>("");
+  const [taskEdit, setTaskEdit] = useState<any>(null);
 
   const addTask = (e: any) => {
     if (e.key === "Enter") {
@@ -69,6 +71,15 @@ const AdminTask: React.FC<Props> = ({ create }) => {
     setColor(color.hex);
   };
 
+  // const changeModeToEdit = (task?: any) => {
+  //   setCreateTask(!createTask);
+  //   setEditTask(!editTask);
+
+  //   createTask && editTask ? setTaskEdit()
+  // };
+
+  console.log(taskEdit !== null);
+
   return (
     <div>
       {tasks ? (
@@ -77,6 +88,7 @@ const AdminTask: React.FC<Props> = ({ create }) => {
             <div
               className="admin-task--task"
               style={{ backgroundColor: task.color }}
+              onClick={() => setTaskEdit(task)}
             >
               <div className="admin-task--task__title">{task.title}</div>
               <div className="admin-task--task__assigned">User</div>
@@ -96,34 +108,42 @@ const AdminTask: React.FC<Props> = ({ create }) => {
         </IonFabButton>
       </IonFab>
 
-      <IonModal isOpen={createTask}>
+      <IonModal isOpen={taskEdit !== null || createTask}>
         <div className="admin-task__create">
           <IonContent fullscreen>
             <IonList lines="full" class="ion-no-margin">
               <IonToolbar>
                 <IonButtons slot="end">
                   <IonButton
-                    style={{ backgroundColor: "transparent" }}
+                    style={{ backgroundColor: "transparent", color: "#54279F" }}
                     onClick={addTaskToHouse}
+                    title="Save"
                   >
                     Save
                   </IonButton>
                 </IonButtons>
                 <IonButtons slot="start">
                   <IonButton
-                    style={{ backgroundColor: "transparent" }}
-                    onClick={() => setCreateTask(false)}
+                    style={{ backgroundColor: "transparent", color: "#54279F" }}
+                    onClick={() => {
+                      setCreateTask(false);
+                      setTaskEdit(null);
+                    }}
+                    title="Cancel"
                   >
                     Cancel
                   </IonButton>
                 </IonButtons>
-                <IonTitle>Create Task</IonTitle>
+                <IonTitle style={{ textAlign: "center" }}>
+                  {taskEdit ? "Edit Task" : "Create Task"}
+                </IonTitle>
               </IonToolbar>
               <IonList>
                 <IonItem>
                   <IonLabel>Title</IonLabel>
                   <IonInput
                     placeholder="Clean Bathroom"
+                    value={taskEdit && taskEdit.title}
                     onKeyUp={(e: any) => setTitle(e.target.value)}
                   />
                 </IonItem>
@@ -132,7 +152,7 @@ const AdminTask: React.FC<Props> = ({ create }) => {
                   <IonLabel>Color</IonLabel>
                   <br />
                   <CirclePicker
-                    color={color}
+                    color={taskEdit ? taskEdit.color : color}
                     onChangeComplete={handleColorChange}
                     colors={[
                       "#54279F",

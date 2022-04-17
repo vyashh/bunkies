@@ -85,6 +85,7 @@ const Home: React.FC = () => {
               <AdminPage setOpenAdminSettings={setOpenAdminSettings} />
             </IonModal>
 
+            <p className="home__title">This week</p>
             {schedule ? (
               schedule.map((scheduledTask: any) => {
                 const week = moment(scheduledTask.date, "DDMMYYYY").isoWeek();
@@ -98,7 +99,7 @@ const Home: React.FC = () => {
                   );
                   return (
                     <div>
-                      {currentWeek === week ? (
+                      {currentWeek === week && (
                         <TaskCard
                           member={
                             currentUserData.uid === item.member.uid
@@ -110,12 +111,6 @@ const Home: React.FC = () => {
                           week={week}
                           deadline={deadline}
                         />
-                      ) : (
-                        <TaskCardSmall
-                          color={task.color}
-                          member={item.member.displayName}
-                          week={week}
-                        />
                       )}
                     </div>
                   );
@@ -124,6 +119,33 @@ const Home: React.FC = () => {
             ) : (
               <Loading />
             )}
+
+            <p className="home__title">Upcoming</p>
+            {schedule &&
+              schedule.map((scheduledTask: any) => {
+                const week = moment(scheduledTask.date, "DDMMYYYY").isoWeek();
+
+                return scheduledTask.tasks.map((item: any) => {
+                  const task = tasks.find(
+                    (task: any) => task.id === item.taskId
+                  );
+                  return (
+                    <div>
+                      {currentWeek === week && (
+                        <TaskCardSmall
+                          member={
+                            currentUserData.uid === item.member.uid
+                              ? "You"
+                              : item.member.displayName
+                          }
+                          color={task.color}
+                          week={week}
+                        />
+                      )}
+                    </div>
+                  );
+                });
+              })}
           </main>
           <footer></footer>
         </div>
