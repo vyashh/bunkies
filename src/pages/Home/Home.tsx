@@ -13,6 +13,7 @@ import { Context } from "../../services/store";
 import "./Home.scss";
 import { createSchedule } from "../../services/schedule";
 import TaskCardSmall from "../../components/task-card-small/task-card-small.component";
+import Loading from "../../components/loading/loading.component";
 
 // set start of week on monday
 moment.updateLocale("en", {
@@ -84,9 +85,12 @@ const Home: React.FC = () => {
               <AdminPage setOpenAdminSettings={setOpenAdminSettings} />
             </IonModal>
 
-            {schedule &&
+            {schedule ? (
               schedule.map((scheduledTask: any) => {
                 const week = moment(scheduledTask.date, "DDMMYYYY").isoWeek();
+                const taskDate = moment(scheduledTask.date, "DD/MM/YYYY");
+                const currentDate = moment();
+                const deadline = taskDate.diff(currentDate, "days");
 
                 return scheduledTask.tasks.map((item: any) => {
                   const task = tasks.find(
@@ -104,6 +108,7 @@ const Home: React.FC = () => {
                           color={task.color}
                           title={task.title}
                           week={week}
+                          deadline={deadline}
                         />
                       ) : (
                         <TaskCardSmall
@@ -115,7 +120,10 @@ const Home: React.FC = () => {
                     </div>
                   );
                 });
-              })}
+              })
+            ) : (
+              <Loading />
+            )}
           </main>
           <footer></footer>
         </div>

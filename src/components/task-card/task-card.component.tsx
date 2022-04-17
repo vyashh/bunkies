@@ -7,6 +7,7 @@ interface Props {
   member: string;
   title: string;
   color: string;
+  deadline: number;
 }
 
 const TaskCard: React.FC<Props> = (props) => {
@@ -27,7 +28,9 @@ const TaskCard: React.FC<Props> = (props) => {
       </div>
       <div className="card__description">
         <div className="card__description--deadline">Deadline</div>
-        <div className="card__description--deadline-info">7 days</div>
+        <div className="card__description--deadline-info">
+          {props.deadline === 0 ? "Today" : `${props.deadline} days`}
+        </div>
       </div>
     </div>
   );
