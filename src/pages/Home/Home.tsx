@@ -141,7 +141,7 @@ const Home: React.FC = () => {
                   );
                   return (
                     <div>
-                      {currentWeek === week && (
+                      {currentWeek !== week && (
                         <TaskCardSmall
                           member={
                             currentUserData.uid === item.member.uid

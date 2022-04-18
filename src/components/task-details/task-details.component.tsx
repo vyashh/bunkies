@@ -1,16 +1,22 @@
 import {
   IonButton,
   IonButtons,
+  IonCheckbox,
   IonContent,
   IonHeader,
+  IonItem,
   IonLabel,
+  IonList,
+  IonListHeader,
   IonModal,
   IonSegment,
   IonSegmentButton,
   IonTitle,
   IonToolbar,
+  useIonAlert,
 } from "@ionic/react";
 import { useState } from "react";
+import Button from "../button/button.component";
 import "./task-details.styles.scss";
 
 interface Props {
@@ -19,44 +25,62 @@ interface Props {
 }
 
 const TaskDetails: React.FC<Props> = (props) => {
+  const [present] = useIonAlert();
   const task = props.task;
   return (
     <div>
       <IonContent fullscreen>
         <IonHeader translucent>
           <IonToolbar>
-            <IonButtons slot="end">
+            <IonButtons slot="start">
               <IonButton
                 style={{ backgroundColor: "transparent", color: "#54279f" }}
                 onClick={() => props.setIsOpen(false)}
               >
+                Cancel
+              </IonButton>
+            </IonButtons>
+            <IonButtons slot="end">
+              <IonButton
+                style={{ backgroundColor: "transparent", color: "#54279f" }}
+                onClick={() =>
+                  present({
+                    cssClass: "my-css",
+                    header: "Finishing up!",
+                    message: "Are you done with the todo list?",
+                    buttons: [
+                      "No",
+                      {
+                        text: "Yes",
+                        handler: (d) => console.log("ok pressed"),
+                      },
+                    ],
+                    onDidDismiss: (e) => console.log("did dismiss"),
+                  })
+                }
+                // onClick={() => props.setIsOpen(false)}
+              >
                 Done
               </IonButton>
             </IonButtons>
-            <IonTitle>{task.title}</IonTitle>
-          </IonToolbar>
-          <IonToolbar>
-            <IonSegment value={"tasks"}>
-              <IonSegmentButton value="tasks">
-                <IonLabel>Task</IonLabel>
-              </IonSegmentButton>
-              <IonSegmentButton value="penalties">
-                <IonLabel>Penalties</IonLabel>
-              </IonSegmentButton>
-              <IonSegmentButton value="house">
-                <IonLabel>House</IonLabel>
-              </IonSegmentButton>
-            </IonSegment>
+            <IonTitle style={{ textAlign: "center" }}>{task.title}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <div className="admin">
-          {/* {currentTab === "tasks" && <AdminTask />}
-          {currentTab === "house" && <AdminHouse />} */}
+        <div className="task-details">
+          <IonList>
+            <IonListHeader>Todo:</IonListHeader>
+            <IonItem> Penalty: None</IonItem>
+            {task.todo.map((item: any) => {
+              return (
+                <IonItem>
+                  <IonCheckbox color="tertiary" slot="start" />
+                  <IonLabel>{item.title}</IonLabel>
+                </IonItem>
+              );
+            })}
+          </IonList>
         </div>
       </IonContent>
-      {/* <IonModal isOpen={true}>
-        <IonContent>Modal Content</IonContent>
-      </IonModal> */}
     </div>
   );
 };

@@ -6,6 +6,18 @@ import { useAuth } from "../../services/firebase";
 import Loading from "../../components/loading/loading.component";
 
 const Login: React.FC = () => {
+  const currentUser = useAuth();
+
+  if (!currentUser) {
+    return (
+      <IonPage>
+        <IonContent fullscreen>
+          <Loading />
+        </IonContent>
+      </IonPage>
+    );
+  }
+
   return (
     <IonPage>
       <IonContent fullscreen>
