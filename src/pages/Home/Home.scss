@@ -27,10 +27,10 @@
   }
 
   &__title {
-    // font-size: 1em;
-    font-weight: bold;
     text-align: right;
-    // opacity: .4;
+    font-weight: bold;
+    font-size: 1.5em;
+    border-bottom: 4px dashed rgba(0, 0, 0, 0.303);
   }
 
 

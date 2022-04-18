@@ -14,6 +14,7 @@ import { useState } from "react";
 import "./task-details.styles.scss";
 
 interface Props {
+  setIsOpen: (state: boolean) => void;
   task: any;
 }
 
@@ -27,6 +28,7 @@ const TaskDetails: React.FC<Props> = (props) => {
             <IonButtons slot="end">
               <IonButton
                 style={{ backgroundColor: "transparent", color: "#54279f" }}
+                onClick={() => props.setIsOpen(false)}
               >
                 Done
               </IonButton>

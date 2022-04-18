@@ -14,6 +14,7 @@ import "./Home.scss";
 import { createSchedule } from "../../services/schedule";
 import TaskCardSmall from "../../components/task-card-small/task-card-small.component";
 import Loading from "../../components/loading/loading.component";
+import TaskDetails from "../../components/task-details/task-details.component";
 
 // set start of week on monday
 moment.updateLocale("en", {
@@ -36,10 +37,17 @@ const Home: React.FC = () => {
   const [loading, setLoading] = loadingIndicator;
   const [openAdminSettings, setOpenAdminSettings] = useState(false);
   const [userHasNoHouse, setUserHasNoHouse] = showIntroduction;
+  const [showDetails, setShowDetails] = useState<boolean>(false);
+  const [selectedTask, setSelectedTask] = useState<any>(null);
   let currentWeek: any = moment(Date.now()).isoWeek(); // now
 
   const signOut = () => {
     logout();
+  };
+
+  const handleSelectTask = (task: any) => {
+    setSelectedTask(task);
+    setShowDetails(true);
   };
 
   useEffect(() => {}, [schedule]);
@@ -100,17 +108,19 @@ const Home: React.FC = () => {
                   return (
                     <div>
                       {currentWeek === week && (
-                        <TaskCard
-                          member={
-                            currentUserData.uid === item.member.uid
-                              ? "You"
-                              : item.member.displayName
-                          }
-                          color={task.color}
-                          title={task.title}
-                          week={week}
-                          deadline={deadline}
-                        />
+                        <div onClick={() => handleSelectTask(task)}>
+                          <TaskCard
+                            member={
+                              currentUserData.uid === item.member.uid
+                                ? "You"
+                                : item.member.displayName
+                            }
+                            color={task.color}
+                            title={task.title}
+                            week={week}
+                            deadline={deadline}
+                          />
+                        </div>
                       )}
                     </div>
                   );
@@ -146,6 +156,9 @@ const Home: React.FC = () => {
                   );
                 });
               })}
+            <IonModal isOpen={showDetails}>
+              <TaskDetails setIsOpen={setShowDetails} task={selectedTask} />
+            </IonModal>
           </main>
           <footer></footer>
         </div>
