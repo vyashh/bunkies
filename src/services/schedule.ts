@@ -46,12 +46,12 @@ const getEveryMonday = () => {
   return result.map((m) => m.format("DD/MM/YYYY"));
 };
 
-const generateSchedule = async () => {
+const generateSchedule = async (houseId: string) => {
   const dates = getEveryMonday();
   let tasks: Array<string> = [];
   let schedule: Array<any> = [];
 
-  await getTasks("8KqyTXY9oClGxBGdGDcE").then((data) => (tasks = data));
+  await getTasks(houseId).then((data) => (tasks = data));
 
   tasks.map((task: any) => {
     let memberIndex = 0;
@@ -91,9 +91,9 @@ const generateSchedule = async () => {
   return schedule;
 };
 
-export const createSchedule = async (houseId: string) => {
+export const createSchedule = (houseId: string) => {
   const docRef = doc(db, "houses", houseId);
-  const newSchedule = generateSchedule();
+  const newSchedule = generateSchedule(houseId);
   newSchedule.then(async (schedule) => {
     await updateDoc(docRef, {
       schedule: schedule,

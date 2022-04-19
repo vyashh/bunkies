@@ -41,18 +41,21 @@ const Store = ({ children }) => {
   };
 
   const getHouseSchedule = async (houseId) => {
+    setLoadingIndicator(true);
     const docRef = doc(db, "houses", houseId);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
       const data = docSnap.data();
 
-      data.schedule && checkCleanSchedule(houseId, data.schedule);
+      data.schedule && cleanSchedule(houseId, data.schedule);
       // setScheduleData(data.schedule);
     }
+    setLoadingIndicator(false);
   };
 
-  const checkCleanSchedule = (houseId, data) => {
+  const cleanSchedule = (houseId, data) => {
+    setLoadingIndicator(true);
     const newSchedule = data;
 
     data.map((scheduledTask, index) => {
@@ -65,6 +68,9 @@ const Store = ({ children }) => {
         addToHistory(houseId, scheduledTask);
       }
     });
+
+    setScheduleData(newSchedule);
+    setLoadingIndicator(false);
   };
 
   useEffect(() => {

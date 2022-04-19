@@ -26,6 +26,7 @@ import { CirclePicker } from "react-color";
 import NoData from "../../assets/empty.svg";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../services/firebase";
+import { createSchedule } from "../../services/schedule";
 
 interface Props {
   create?: boolean;
@@ -80,6 +81,7 @@ const AdminTask: React.FC<Props> = ({ create }) => {
       setCreateTask(false);
       setLoading(false);
       setTasks([...tasks, docSnap.data()]);
+      createSchedule(house.id);
     });
   };
 
@@ -100,6 +102,7 @@ const AdminTask: React.FC<Props> = ({ create }) => {
         tasks.map((task: any) => {
           return (
             <div
+              key={task.id}
               className="admin-task--task"
               style={{ backgroundColor: task.color }}
               onClick={() => setTaskEdit(task)}
