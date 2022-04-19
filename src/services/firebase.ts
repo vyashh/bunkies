@@ -12,8 +12,9 @@ import {
   signOut,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { Context } from "./store";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 // get config keys from .env file
 const config = {
@@ -30,6 +31,8 @@ const app = initializeApp(config);
 const auth = getAuth();
 
 export const db = getFirestore(app);
+
+export let loading = true;
 
 export const register = async (email: string, password: string) => {
   // return createUserWithEmailAndPassword(auth, email, password);
@@ -71,6 +74,7 @@ export const useAuth = () => {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
+      loading = false;
     });
     return unsub;
   }, []);

@@ -68,7 +68,7 @@ const TaskDetails: React.FC<Props> = (props) => {
         </IonHeader>
         <div className="task-details">
           <IonList>
-            <IonListHeader>Todo:</IonListHeader>
+            <IonListHeader>Todo</IonListHeader>
             <IonItem> Penalty: None</IonItem>
             {task.todo.map((item: any) => {
               return (

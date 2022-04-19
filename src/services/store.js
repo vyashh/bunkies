@@ -1,6 +1,8 @@
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import moment from "moment";
 import React, { useState, useEffect } from "react";
 import { db, useAuth } from "./firebase";
+import { addToHistory } from "./schedule";
 
 export const Context = React.createContext();
 
@@ -9,7 +11,7 @@ const Store = ({ children }) => {
   const [errorLogin, setErrorLogin] = useState("");
   const [userData, setUserData] = useState(null);
   const [houseData, setHouseData] = useState(null);
-  const [tasksData, setTasksData] = useState(null);
+  const [tasksData, setTasksData] = useState([]);
   const [scheduleData, setScheduleData] = useState(null);
   const [loadingIndicator, setLoadingIndicator] = useState(false);
   const [showIntroduction, setShowIntroduction] = useState(false);
@@ -44,8 +46,25 @@ const Store = ({ children }) => {
 
     if (docSnap.exists()) {
       const data = docSnap.data();
-      setScheduleData(data.schedule);
+
+      data.schedule && checkCleanSchedule(houseId, data.schedule);
+      // setScheduleData(data.schedule);
     }
+  };
+
+  const checkCleanSchedule = (houseId, data) => {
+    const newSchedule = data;
+
+    data.map((scheduledTask, index) => {
+      const taskDate = moment(scheduledTask.date, "DD/MM/YYYY");
+      const currentDate = moment();
+      const deadline = taskDate.diff(currentDate, "days");
+
+      if (deadline < 0) {
+        newSchedule.splice(index, 1);
+        addToHistory(houseId, scheduledTask);
+      }
+    });
   };
 
   useEffect(() => {

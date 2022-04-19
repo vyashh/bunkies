@@ -24,6 +24,8 @@ import { Context } from "../../services/store";
 import { addTask as addTaskToDB } from "../../services/house";
 import { CirclePicker } from "react-color";
 import NoData from "../../assets/empty.svg";
+import { collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "../../services/firebase";
 
 interface Props {
   create?: boolean;
@@ -46,24 +48,38 @@ const AdminTask: React.FC<Props> = ({ create }) => {
   const addTask = (e: any) => {
     if (e.key === "Enter") {
       const newTodoItem = e.target.value;
-      setTodoList((todo) => [...todoList, { title: newTodoItem }]);
+      setTodoList((todo) => [
+        ...todoList,
+        { title: newTodoItem, id: doc(collection(db, "random")).id },
+      ]);
       e.target.value = "";
     }
   };
 
   const deleteTask = (item: number) => {
-    const newTodoList = todoList.filter(
-      (todoItem, index) => index !== todoItem
-    );
+    const newTodoList = todoList.filter((todoItem, index) => index !== item);
     console.log(newTodoList);
     setTodoList(newTodoList);
   };
 
-  const addTaskToHouse = () => {
+  const addTaskToHouse = async () => {
     setLoading(true);
-    addTaskToDB(house.id, title, color, todoList, members).then(() => {
+    const colRef = doc(collection(db, "houses", house.id, "tasks"));
+
+    await setDoc(colRef, {
+      title: title,
+      color: color,
+      id: colRef.id,
+      todo: todoList,
+      assignedTo: members,
+    }).then(async () => {
+      const docRef = doc(db, "houses", house.id, "tasks", colRef.id);
+      const docSnap = await getDoc(docRef);
+      setTodoList([]);
+      setMembers([]);
       setCreateTask(false);
       setLoading(false);
+      setTasks([...tasks, docSnap.data()]);
     });
   };
 
@@ -77,8 +93,6 @@ const AdminTask: React.FC<Props> = ({ create }) => {
 
   //   createTask && editTask ? setTaskEdit()
   // };
-
-  console.log(taskEdit !== null);
 
   return (
     <div>
@@ -141,11 +155,19 @@ const AdminTask: React.FC<Props> = ({ create }) => {
               <IonList>
                 <IonItem>
                   <IonLabel>Title</IonLabel>
-                  <IonInput
-                    placeholder="Clean Bathroom"
-                    value={taskEdit && taskEdit.title}
-                    onKeyUp={(e: any) => setTitle(e.target.value)}
-                  />
+
+                  {taskEdit ? (
+                    <IonInput
+                      value={taskEdit.title}
+                      onKeyUp={(e: any) => setTitle(e.target.value)}
+                    />
+                  ) : (
+                    <IonInput
+                      placeholder="Clean Bathroom"
+                      // value={taskEdit && taskEdit.title}
+                      onKeyUp={(e: any) => setTitle(e.target.value)}
+                    />
+                  )}
                 </IonItem>
 
                 <IonItem>
@@ -212,7 +234,6 @@ const AdminTask: React.FC<Props> = ({ create }) => {
 
                 {todoList &&
                   todoList.map((task, index) => {
-                    console.log(task);
                     return (
                       <IonItem key={index}>
                         <IonIcon

@@ -3,6 +3,7 @@ import {
   arrayUnion,
   collection,
   doc,
+  getDoc,
   getDocs,
   query,
   setDoc,
@@ -78,13 +79,18 @@ export const addTask = async (
   todoList: Array<any>,
   members: Array<any>
 ) => {
-  const docRef = doc(collection(db, "houses", houseId, "tasks"));
+  const colRef = doc(collection(db, "houses", houseId, "tasks"));
 
-  await setDoc(docRef, {
+  await setDoc(colRef, {
     title: taskTitle,
     color: color,
-    id: docRef.id,
+    id: colRef.id,
     todo: todoList,
     assignedTo: members,
+  }).then(async () => {
+    const docRef = doc(db, "houses", houseId, "tasks", colRef.id);
+    const docSnap = await getDoc(docRef);
+
+    return docSnap.data();
   });
 };

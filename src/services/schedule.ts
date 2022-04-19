@@ -101,6 +101,6 @@ export const createSchedule = async (houseId: string) => {
   });
 };
 
-export const getSchedule = async (houseId: string) => {
-    
-}
+export const addToHistory = async (houseId: string, data: any) => {
+  await setDoc(doc(db, "houses", houseId, "history", data.id, data.id), data);
+};

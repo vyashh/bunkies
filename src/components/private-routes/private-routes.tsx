@@ -11,6 +11,8 @@ import avatar from "../../assets/avatar.svg";
 import history from "../../assets/history.svg";
 import { Redirect, Route } from "react-router";
 import Home from "../../pages/Home/Home";
+import History from "../../pages/History/History";
+import Settings from "../../pages/Settings/Settings";
 
 const PrivateRoute: React.FC = () => {
   // if current user is not logged in user will be redirected to /login
@@ -20,6 +22,8 @@ const PrivateRoute: React.FC = () => {
         <Route exact path="/calendar">
           <Home />
         </Route>
+        <Route exact path="/history" component={History} />
+        <Route exact path="/settings" component={Settings} />
         <Route exact path="/">
           <Redirect to="/calendar" />
         </Route>
@@ -28,10 +32,10 @@ const PrivateRoute: React.FC = () => {
         <IonTabButton tab="calendar" href="/calendar">
           <IonIcon icon={calendar}></IonIcon>
         </IonTabButton>
-        <IonTabButton tab="home" href="/home">
+        <IonTabButton tab="history" href="/history">
           <IonIcon icon={history}></IonIcon>
         </IonTabButton>
-        <IonTabButton tab="home" href="/home">
+        <IonTabButton tab="settings" href="/settings">
           <IonIcon icon={avatar}></IonIcon>
         </IonTabButton>
       </IonTabBar>

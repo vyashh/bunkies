@@ -41,10 +41,6 @@ const Home: React.FC = () => {
   const [selectedTask, setSelectedTask] = useState<any>(null);
   let currentWeek: any = moment(Date.now()).isoWeek(); // now
 
-  const signOut = () => {
-    logout();
-  };
-
   const handleSelectTask = (task: any) => {
     setSelectedTask(task);
     setShowDetails(true);
@@ -66,6 +62,9 @@ const Home: React.FC = () => {
   //   return <Redirect to="/welcome" />;
   // }
 
+  // als week voorbij is moet het verplaatst worden naar een eigen document /houses/history/:id
+  // vervolgens moet de week verwijderd worden uit de schedule veld.
+
   return (
     <IonPage>
       <IonContent fullscreen>
@@ -82,7 +81,6 @@ const Home: React.FC = () => {
                 onClick={() => setOpenAdminSettings(true)}
               />
             </div>
-            <button onClick={signOut}>Signout</button>
           </header>
           <main>
             <IonModal isOpen={userHasNoHouse}>
@@ -127,7 +125,7 @@ const Home: React.FC = () => {
                 });
               })
             ) : (
-              <Loading />
+              <p>No Schedule Yet</p>
             )}
 
             <p className="home__title">Upcoming</p>
