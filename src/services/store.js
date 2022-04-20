@@ -2,7 +2,7 @@ import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import moment from "moment";
 import React, { useState, useEffect } from "react";
 import { db, useAuth } from "./firebase";
-import { addToHistory } from "./schedule";
+import { addToHistory, updateSchedule } from "./schedule";
 
 export const Context = React.createContext();
 
@@ -69,7 +69,9 @@ const Store = ({ children }) => {
       }
     });
 
-    setScheduleData(newSchedule);
+    updateSchedule(houseId, newSchedule).then(() =>
+      setScheduleData(newSchedule)
+    );
     setLoadingIndicator(false);
   };
 
