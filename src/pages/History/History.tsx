@@ -1,11 +1,14 @@
 import "./History.scss";
 import {
   IonAvatar,
+  IonButton,
+  IonButtons,
   IonContent,
   IonItem,
   IonLabel,
   IonList,
   IonListHeader,
+  IonModal,
   IonPage,
 } from "@ionic/react";
 import ArrowIcon from "../../assets/icons/chevron.svg";
@@ -22,7 +25,20 @@ const History: React.FC = () => {
     <IonPage>
       <IonContent fullscreen>
         <IonList>
-          <IonListHeader>Tasks History</IonListHeader>
+          <IonListHeader>
+            Tasks History
+            <IonButtons slot="end">
+              <IonButton
+                style={{ backgroundColor: "transparent", color: "#54279f" }}
+              >
+                Cancel
+              </IonButton>
+            </IonButtons>
+          </IonListHeader>
+
+          <IonItem style={{ fontSize: ".8em" }}>
+            <IonAvatar slot="end">Score</IonAvatar>
+          </IonItem>
           {taskArchive.map((archive: any) => {
             return archive.tasks.map((task: any) => {
               const taskDetails = tasks.find(
@@ -34,6 +50,7 @@ const History: React.FC = () => {
                     slot="start"
                     style={{ backgroundColor: taskDetails.color }}
                   />
+                  <IonAvatar slot="end">TBD</IonAvatar>
                   <IonLabel>
                     <h2>{taskDetails.title}</h2>
                     <h3>{task.member.displayName}</h3>

@@ -66,7 +66,6 @@ const TaskDetails: React.FC<Props> = (props) => {
     console.log(taskInSchedule);
 
     if (docSnap.exists()) {
-      console.log("week already exists");
       addToHistory(house.id, { id: id, task: taskInSchedule[0] }, true).then(
         () => {
           updateSchedule(house.id, newSchedule);
