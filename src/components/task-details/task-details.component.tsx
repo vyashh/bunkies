@@ -15,7 +15,9 @@ import {
   IonToolbar,
   useIonAlert,
 } from "@ionic/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { addToHistory, updateSchedule } from "../../services/schedule";
+import { Context } from "../../services/store";
 import Button from "../button/button.component";
 import "./task-details.styles.scss";
 
@@ -25,8 +27,28 @@ interface Props {
 }
 
 const TaskDetails: React.FC<Props> = (props) => {
+  const { scheduleData, houseData } = useContext(Context);
+  const [schedule, setSchedule] = scheduleData;
+  const [house, setHouse] = houseData;
   const [present] = useIonAlert();
   const task = props.task;
+
+  const handleSubmit = () => {
+    const toHistory = schedule.find(
+      (scheduledItem: any) => scheduledItem.id === task.scheduleId
+    );
+
+    const newSchedule = schedule.filter(
+      (scheduledItem: any) => scheduledItem.id !== task.scheduleId
+    );
+
+    addToHistory(house.id, toHistory);
+    updateSchedule(house.id, newSchedule);
+    setSchedule(newSchedule);
+
+    props.setIsOpen(false);
+  };
+
   return (
     <div>
       <IonContent fullscreen>
@@ -52,7 +74,7 @@ const TaskDetails: React.FC<Props> = (props) => {
                       "No",
                       {
                         text: "Yes",
-                        handler: (d) => console.log("ok pressed"),
+                        handler: (d) => handleSubmit(),
                       },
                     ],
                     onDidDismiss: (e) => console.log("did dismiss"),

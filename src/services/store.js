@@ -12,6 +12,7 @@ const Store = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const [houseData, setHouseData] = useState(null);
   const [tasksData, setTasksData] = useState([]);
+  const [tasksHistoryData, setTasksHistoryData] = useState([]);
   const [scheduleData, setScheduleData] = useState(null);
   const [loadingIndicator, setLoadingIndicator] = useState(false);
   const [showIntroduction, setShowIntroduction] = useState(false);
@@ -26,6 +27,7 @@ const Store = ({ children }) => {
 
     getHouseTasks(houseId);
     getHouseSchedule(houseId);
+    getTaskHistory(houseId);
   };
 
   const getHouseTasks = async (houseId) => {
@@ -75,6 +77,21 @@ const Store = ({ children }) => {
     setLoadingIndicator(false);
   };
 
+  const getTaskHistory = async (houseId) => {
+    const historyRef = await getDocs(
+      collection(db, "houses", houseId, "history")
+    );
+
+    let taskHistory = [];
+
+    if (!historyRef.empty) {
+      historyRef.forEach((doc) => {
+        taskHistory.push(doc.data());
+      });
+      setTasksHistoryData(taskHistory);
+    }
+  };
+
   useEffect(() => {
     const getUserData = async () => {
       if (currentUser && !userData) {
@@ -106,6 +123,7 @@ const Store = ({ children }) => {
         tasksData: [tasksData, setTasksData],
         scheduleData: [scheduleData, setScheduleData],
         showIntroduction: [showIntroduction, setShowIntroduction],
+        taskHistoryData: [tasksHistoryData, setTasksHistoryData],
       }}
     >
       {children}

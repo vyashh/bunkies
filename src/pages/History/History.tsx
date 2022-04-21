@@ -9,23 +9,19 @@ import {
   IonPage,
 } from "@ionic/react";
 import ArrowIcon from "../../assets/icons/chevron.svg";
+import { useContext } from "react";
+import { Context } from "../../services/store";
 
 const History: React.FC = () => {
+  const { taskHistoryData } = useContext(Context);
+
+  const [taskArchive, setTaskArchive] = taskHistoryData;
   return (
     <IonPage>
       <IonContent fullscreen>
         <IonList>
           <IonListHeader>Tasks History</IonListHeader>
-          <IonItem>
-            <IonAvatar slot="start" style={{ backgroundColor: "red" }} />
-            <IonLabel>
-              <h2>Task</h2>
-              <h3>Date</h3>
-              <p>User</p>
-            </IonLabel>
-            <IonAvatar slot="end" />
-            <img src={ArrowIcon} alt="view details" />
-          </IonItem>
+          {taskArchive.map((task: any) => {})}
         </IonList>
       </IonContent>
     </IonPage>

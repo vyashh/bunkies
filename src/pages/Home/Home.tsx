@@ -41,7 +41,8 @@ const Home: React.FC = () => {
   const [selectedTask, setSelectedTask] = useState<any>(null);
   let currentWeek: any = moment(Date.now()).isoWeek(); // now
 
-  const handleSelectTask = (task: any) => {
+  const handleSelectTask = (task: any, scheduleId: string) => {
+    task.scheduleId = scheduleId;
     setSelectedTask(task);
     setShowDetails(true);
   };
@@ -99,14 +100,18 @@ const Home: React.FC = () => {
                 const currentDate = moment();
                 const deadline = taskDate.diff(currentDate, "days");
 
-                return scheduledTask.tasks.map((item: any) => {
+                return scheduledTask.tasks.map((item: any, index: number) => {
                   const task = tasks.find(
                     (task: any) => task.id === item.taskId
                   );
                   return (
                     <div>
                       {currentWeek === week && (
-                        <div onClick={() => handleSelectTask(task)}>
+                        <div
+                          onClick={() =>
+                            handleSelectTask(task, scheduledTask.id)
+                          }
+                        >
                           <TaskCard
                             member={
                               currentUserData.uid === item.member.uid
