@@ -5,15 +5,19 @@
   grid-template-rows: repeat(5, 1fr);
   grid-column-gap: 0px;
   grid-row-gap: 0px;
-  color: white;
+
   border-radius: 20px;
   //   background-color: rgb(139, 180, 255);
   margin-bottom: 1em;
-  
+  background: #FFFFFF;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 19px;
+
 
   &__week {
     grid-area: 1 / 1 / 6 / 3;
     border-right: 1px solid white;
+    color: white;
     text-align: center;
     // background-color: #669aff;
     border-bottom-left-radius: 20px;
@@ -50,6 +54,7 @@
     grid-template-rows: repeat(2, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
+    font-size: .8em;
 
     &--task,
     &--deadline {

@@ -1,4 +1,5 @@
 import {
+  arrayUnion,
   collection,
   doc,
   getDoc,
@@ -102,8 +103,23 @@ export const createSchedule = (houseId: string) => {
   });
 };
 
-export const addToHistory = async (houseId: string, data: any) => {
-  await setDoc(doc(db, "houses", houseId, "history", data.id), data);
+export const addToHistory = async (
+  houseId: string,
+  data: any,
+  toUpdate?: boolean
+) => {
+  if (toUpdate) {
+    const docRef = doc(db, "houses", houseId, "history", data.id);
+    const docSnap = await getDoc(docRef);
+
+    // docSnap.exists() && console.log(data.id, docSnap.data());
+
+    await updateDoc(docRef, {
+      tasks: arrayUnion(data.task),
+    });
+  } else {
+    await setDoc(doc(db, "houses", houseId, "history", data.id), data);
+  }
 };
 
 export const updateSchedule = async (houseId: string, data: any) => {

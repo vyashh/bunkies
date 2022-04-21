@@ -15,7 +15,10 @@ import {
   IonToolbar,
   useIonAlert,
 } from "@ionic/react";
+import { collection, doc, getDoc } from "firebase/firestore";
+import moment from "moment";
 import { useContext, useState } from "react";
+import { db, useAuth } from "../../services/firebase";
 import { addToHistory, updateSchedule } from "../../services/schedule";
 import { Context } from "../../services/store";
 import Button from "../button/button.component";
@@ -32,21 +35,52 @@ const TaskDetails: React.FC<Props> = (props) => {
   const [house, setHouse] = houseData;
   const [present] = useIonAlert();
   const task = props.task;
+  const currentUser = useAuth();
 
-  const handleSubmit = () => {
-    const toHistory = schedule.find(
+  const handleSubmit = async () => {
+    const weekIndex = schedule.findIndex(
       (scheduledItem: any) => scheduledItem.id === task.scheduleId
     );
 
-    const newSchedule = schedule.filter(
-      (scheduledItem: any) => scheduledItem.id !== task.scheduleId
+    const { date, id } = schedule[weekIndex];
+    const now = moment().format("D MMMM YYYY HH:mm:ss");
+
+    const taskInSchedule = schedule[weekIndex].tasks.filter(
+      (scheduledTask: any) => scheduledTask.taskId === task.id
     );
 
-    addToHistory(house.id, toHistory);
-    updateSchedule(house.id, newSchedule);
-    setSchedule(newSchedule);
+    const toHistory = { date: date, id: id, tasks: taskInSchedule };
 
-    props.setIsOpen(false);
+    const newScheduledTasks = schedule[weekIndex].tasks.filter(
+      (scheduledTask: any) => scheduledTask.taskId !== task.id
+    );
+
+    const newSchedule = schedule;
+
+    newSchedule[weekIndex].tasks = newScheduledTasks;
+    taskInSchedule[0].doneAt = now;
+
+    const docRef = doc(db, "houses", house.id, "history", task.scheduleId);
+    const docSnap = await getDoc(docRef);
+
+    console.log(taskInSchedule);
+
+    if (docSnap.exists()) {
+      console.log("week already exists");
+      addToHistory(house.id, { id: id, task: taskInSchedule[0] }, true).then(
+        () => {
+          updateSchedule(house.id, newSchedule);
+          setSchedule(newSchedule);
+          props.setIsOpen(false);
+        }
+      );
+    } else {
+      addToHistory(house.id, toHistory).then(() => {
+        updateSchedule(house.id, newSchedule);
+        setSchedule(newSchedule);
+        props.setIsOpen(false);
+      });
+    }
   };
 
   return (

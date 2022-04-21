@@ -74,7 +74,7 @@ const Home: React.FC = () => {
             <h4 className="home__date--label">Today</h4>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <p className="home__date--day">
-                {moment().format("D MMMM YYYY")}
+                {moment().format("D MMMM YYYY ")}
               </p>
               <img
                 src={HouseSettingsImage}
@@ -93,10 +93,24 @@ const Home: React.FC = () => {
             </IonModal>
 
             <p className="home__title">This week</p>
+            {/* <TaskCard
+              member="You"
+              color="#54279f"
+              title="Badkamer"
+              week={16}
+              deadline={5}
+            />
+            <TaskCard
+              member="You"
+              color="#af133e"
+              title="Toilet"
+              week={16}
+              deadline={5}
+            /> */}
             {schedule ? (
               schedule.map((scheduledTask: any) => {
                 const week = moment(scheduledTask.date, "DDMMYYYY").isoWeek();
-                const taskDate = moment(scheduledTask.date, "DD/MM/YYYY");
+                const taskDate = moment(scheduledTask.date, "DD/MM/YYYY ");
                 const currentDate = moment();
                 const deadline = taskDate.diff(currentDate, "days");
 
@@ -109,6 +123,7 @@ const Home: React.FC = () => {
                       {currentWeek === week && (
                         <div
                           onClick={() =>
+                            currentUserData.uid === item.member.uid &&
                             handleSelectTask(task, scheduledTask.id)
                           }
                         >

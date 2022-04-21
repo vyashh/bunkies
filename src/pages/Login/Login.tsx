@@ -10,16 +10,6 @@ const Login: React.FC = () => {
 
   console.log(loading);
 
-  if (loading) {
-    return (
-      <IonPage>
-        <IonContent fullscreen>
-          <Loading />
-        </IonContent>
-      </IonPage>
-    );
-  }
-
   return (
     <IonPage>
       <IonContent fullscreen>

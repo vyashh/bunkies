@@ -2,7 +2,7 @@ import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import moment from "moment";
 import React, { useState, useEffect } from "react";
 import { db, useAuth } from "./firebase";
-import { addToHistory, updateSchedule } from "./schedule";
+import { addToHistory, createSchedule, updateSchedule } from "./schedule";
 
 export const Context = React.createContext();
 
@@ -51,7 +51,8 @@ const Store = ({ children }) => {
       const data = docSnap.data();
 
       data.schedule && cleanSchedule(houseId, data.schedule);
-      // setScheduleData(data.schedule);
+      // createSchedule(houseId);
+      setScheduleData(data.schedule);
     }
     setLoadingIndicator(false);
   };
@@ -78,6 +79,7 @@ const Store = ({ children }) => {
   };
 
   const getTaskHistory = async (houseId) => {
+    setLoadingIndicator(true);
     const historyRef = await getDocs(
       collection(db, "houses", houseId, "history")
     );
@@ -88,8 +90,10 @@ const Store = ({ children }) => {
       historyRef.forEach((doc) => {
         taskHistory.push(doc.data());
       });
+
       setTasksHistoryData(taskHistory);
     }
+    setLoadingIndicator(false);
   };
 
   useEffect(() => {

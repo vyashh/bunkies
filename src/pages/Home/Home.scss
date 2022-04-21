@@ -29,9 +29,10 @@
   }
 
   &__title {
-    text-align: right;
+    text-align: left;
     font-weight: bold;
-    border-bottom: 4px dashed rgba(0, 0, 0, 0.303);
+    opacity: .5;
+    // border-bottom: 1px solid rgba(0, 0, 0, 0.303);
   }
 
 
